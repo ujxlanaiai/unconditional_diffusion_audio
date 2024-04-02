@@ -1,4 +1,4 @@
-from my_generator.uncongen_suc import sample
+from my_generator.train_val_plot import sample
 import torch
 import torchaudio
 
@@ -8,6 +8,6 @@ sample_rate = 44100
 print(sample_np.shape)
 print('Saving audio')
 
-torchaudio.save("guitar_3.wav", torch.tensor(sample_np), sample_rate, channels_first=True)
+torchaudio.save("piano_4.wav", torch.tensor(sample_np), sample_rate)
 
 print('Save complete')

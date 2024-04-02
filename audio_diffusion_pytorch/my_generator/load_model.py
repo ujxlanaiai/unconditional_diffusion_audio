@@ -11,7 +11,7 @@ else:
     print("CPU running")
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "6"
-model_path = '/home/aix23606/jungmin/audio-diffusion-pytorch/audio_diffusion_pytorch/saved_model/model4.pth'
+model_path = '/home/aix23606/jungmin/audio-diffusion-pytorch/audio_diffusion_pytorch/saved_model/model8.pth'
 
 loaded_model = DiffusionModel(
     net_t=UNetV0,
@@ -46,6 +46,6 @@ print(sample_np.shape)
 
 print('Saving audio')
 
-torchaudio.save("piano_1.wav", torch.tensor(sample_np), sample_rate, channels_first=True)
+torchaudio.save("piano_1_1.wav", torch.tensor(sample_np), sample_rate)
 
 print('Save complete')

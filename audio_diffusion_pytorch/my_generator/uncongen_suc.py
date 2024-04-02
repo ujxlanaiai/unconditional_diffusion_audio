@@ -8,6 +8,9 @@ import os
 from torch.utils.data import Dataset, DataLoader
 import librosa
 from tqdm import tqdm
+import wandb
+wandb.init(project='diffusionMusic')
+
 
 class AudioDataset(Dataset):
     def __init__(self, directory, target_length=None):
@@ -48,17 +51,17 @@ model = DiffusionModel(
     sampler_t=VSampler  # The diffusion sampler used
 )
 
-batch_size = 16
+batch_size = 8
 target_length = 2**18
 
-dataset = AudioDataset(directory='/home/aix23606/jungmin/kaggle_dataset/guitar_audio', target_length=target_length)
+dataset = AudioDataset(directory='/home/aix23606/jungmin/kaggle_dataset/piano_audio_cropped', target_length=target_length)
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
 for batch in dataloader:
     print("Batch shape:", batch.shape)
     break  # Print the shape of the first batch only
 
-num_epochs = 20
+num_epochs = 50
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
 print('Ready to train...')
@@ -91,24 +94,24 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
         total_loss += loss.item()
-
+        wandb.log({'epoch': epoch, 'loss': loss})
     print(f"Epoch {epoch+1}/{num_epochs}, Loss: {total_loss / len(dataloader)}")
-
+     
 print('Training Completed')
-
+wandb.finish()
 print('Turning noise into new audio sample')
-noise = torch.randn(16, 1, 2**18).to(device) # [batch_size, in_channels, length]
+noise = torch.randn(8, 1, 2**18).to(device) # [batch_size, in_channels, length]
 sample = model.sample(noise, num_steps=77) # Suggested num_steps 10-100
 
 # save model parameter
 
-# model_dir = '/home/aix23606/jungmin/audio-diffusion-pytorch/audio_diffusion_pytorch/saved_model'
-# os.makedirs(model_dir, exist_ok=True)
-# model_path = os.path.join(model_dir, 'model6.pth')
-#
-# # Save the entire model
-# try:
-#     torch.save(model.state_dict(), model_path)
-#     print(f"Model saved successfully at {model_path}")
-# except Exception as e:
-#     print(f"Error occurred while saving the model: {e}")
+model_dir = '/home/aix23606/jungmin/audio-diffusion-pytorch/audio_diffusion_pytorch/saved_model'
+os.makedirs(model_dir, exist_ok=True)
+model_path = os.path.join(model_dir, 'model8.pth')
+
+# Save the entire model
+try:
+    torch.save(model.state_dict(), model_path)
+    print(f"Model saved successfully at {model_path}")
+except Exception as e:
+    print(f"Error occurred while saving the model: {e}")

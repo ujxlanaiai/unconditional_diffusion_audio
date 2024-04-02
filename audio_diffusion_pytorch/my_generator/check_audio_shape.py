@@ -1,7 +1,7 @@
 import os
 import librosa
 
-directory = '/home/aix23606/jungmin/kaggle_dataset/cat_audio/dataset'
+directory = '/home/aix23606/jungmin/kaggle_dataset/cat_audio/cat_audio'
 
 audio_files = [file for file in os.listdir(directory) if file.endswith('.wav')]
 
@@ -18,4 +18,3 @@ for audio_file in audio_files:
     print(f"Number of channels: {num_channels}")
     print(f"Sample rate: {sample_rate}")
     print()
-
